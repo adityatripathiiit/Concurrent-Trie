@@ -1,0 +1,6 @@
+b
+ca
+cba
+dbdc
+dbbaa
+--

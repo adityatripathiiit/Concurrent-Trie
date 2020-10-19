@@ -1,0 +1,7 @@
+.testout/
+test_trie_single_threaded
+test_trie_rw_lock
+test_trie_s_lock
+test_trie_hoh_lock
+test_trie_rw_lock.c
+test_trie_hoh_lock.c
