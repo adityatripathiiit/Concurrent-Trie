@@ -49,14 +49,14 @@ struct workload * generate_loop(struct workload * w)
     int size = w->size ;
     int pages = w->pages ;
     int *work_array =  malloc(pages*sizeof(int)); 
-    for(int i=0 ; i<pages/size; i++){
+    for(int i=0 ; i< floor(pages/size); i++){
         for(int j=0; j<size; j++){
             work_array[i*size+j] = j ;
         }
     }
     if(pages%size != 0){
         for(int i=0; i<pages%size; i++){
-            work_array[(int)(pages/size)*size+i] = i; 
+            work_array[(int)floor(pages/size)*size+i] = i; 
         }
     }
     w->work = work_array; 
@@ -69,15 +69,15 @@ struct workload * generate_local(struct workload * w)
     int pages = w->pages ;
     int *work_array =  malloc(pages*sizeof(int)); 
 
-    int major = pages*0.8;
-    int minor = pages*0.2; 
+    int major = floor(pages*0.8);
+    int minor = floor(pages*0.2); 
     
     for(int i=0 ; i<major; i++){
-        work_array[i] = rand()%((int)(size*0.2));
+        work_array[i] = rand()%((int)floor(size*0.2));
     }
 
     for(int i=0; i<minor; i++){
-        work_array[i+major] = rand()%((int)(size*0.8))+ size*0.2;
+        work_array[i+major] = rand()%((int)floor(size*0.8))+ (int)floor(size*0.2);
     }
     int left = pages -( major+minor ); 
     for(int i=0; i<left; i++){

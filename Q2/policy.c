@@ -37,9 +37,9 @@ float policy_FIFO(struct workload * w, int cache_size)
 		// }
 		// printf("\n"); 
 	}
-	hit_rate = hits/(pages-hits); 
-	printf("FIFO hits: %d\n",hits); 
-	printf("FIFO misses: %d\n", pages-hits); 
+	hit_rate = (100*(float)hits)/((float)pages); 
+	// printf("FIFO hits: %d\n",hits); 
+	// printf("FIFO misses: %d\n", pages-hits); 
 	/* fill this */
 	return hit_rate;
 }
@@ -86,9 +86,9 @@ float policy_LRU(struct workload * w, int cache_size)
 		}
 	}
 
-	printf("LRU hits: %d\n",hits); 
-	printf("LRU miss: %d\n",pages-hits); 
-	hit_rate = hits/(pages-hits);
+	// printf("LRU hits: %d\n",hits); 
+	// printf("LRU miss: %d\n",pages-hits); 
+	hit_rate = (100*(float)hits)/((float)pages); 
 	/* fill this */
 	return hit_rate;
 }
@@ -102,7 +102,7 @@ float policy_LRUapprox(struct workload * w, int cache_size)
 	int cache[pages][2]; 
 	int hand = 0 ;
 	for(int i=0; i<pages; i++){
-		cache[i][0] = 0 ;
+		cache[i][0] = -1 ;
 		cache[i][1] = 0;
 	}
 	for(int i=0; i<pages; i++){
@@ -130,28 +130,12 @@ float policy_LRUapprox(struct workload * w, int cache_size)
 				hand = (hand+1)%cache_size;
 			}while(inserted != 1 );
 
-			// int removed_one = 0; 	
-			// int cache_full = 0 ; 
-			// if(cache[cache_size-1] == -1 ) cache_full =0 ;
-			// else cache_full = 1;
-			// for(int j=0; j<cache_size; j++){
-			// 	if(cache[j][1] == 0 && removed_one == 0 && cache_full == 1){
-			// 		cache[j][0] = check ; 
-			// 		removed_one = 1;
-			// 	}
-			// 	else if(cache_full ==0){
-			// 		if(cache[j][1] == -1 ){
-			// 			cache[]
-			// 		}
-			// 	}
-			// 	cache[j][1] = 0 ;
-			// }
 		}
 	}
 
-	printf("LRUApprox hits: %d\n",hits); 
-	printf("LRUArrox miss: %d\n",pages-hits); 
-	hit_rate = hits/(pages-hits);
+	// printf("LRUApprox hits: %d\n",hits); 
+	// printf("LRUArrox miss: %d\n",pages-hits); 
+	hit_rate = (100*(float)hits)/((float)pages); 
 	/* fill this */
 	return hit_rate;
 }
@@ -182,9 +166,9 @@ float policy_RANDOM(struct workload * w, int cache_size)
 			k = rand()%cache_size;
 		}
 	}
-	hit_rate = hits/(pages-hits); 
-	printf("Random hits: %d\n",hits); 
-	printf("Random misses: %d\n", pages-hits); 
+	hit_rate = (100*(float)hits)/((float)pages); 
+	// printf("Random hits: %d\n",hits); 
+	// printf("Random misses: %d\n", pages-hits); 
 	/* fill this */
 	return hit_rate;
 }

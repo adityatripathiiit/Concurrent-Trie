@@ -13,6 +13,9 @@ You may add extra definitions as required.
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <time.h>
+#include <math.h>
+#include "fort.h"
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 /* ALL ENUMERATORS HERE */
