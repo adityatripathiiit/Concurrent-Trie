@@ -9,7 +9,10 @@ You may add extra definitions as required.
 
 #ifndef __DEF_H__
 #define __DEF_H__
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <unistd.h>
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 /* ALL ENUMERATORS HERE */
@@ -33,7 +36,7 @@ struct workload
 	// The total size of the workload
 	int size;
 	// The final work to run the policy
-	int * work;
+	int * work; // https://www.geeksforgeeks.org/pointer-array-array-pointer/
 };
 
 //----------------------------------------------------------------

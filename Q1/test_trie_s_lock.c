@@ -93,6 +93,9 @@ void* pref_task(void *tnum){
         if (key[0]=='-') break;
         list = keys_with_prefix(trie, key);
         int i=0;
+        if(list[i] == NULL){
+            fprintf(pref_test_exp, "\n"); 
+        }
         while(list[i]!=NULL){
             fprintf(pref_test_exp,"%s\n",list[i]);
             free(list[i]);
@@ -158,7 +161,7 @@ int main(int argc, char* argv[]){
     printf(YELLOW "Thread 2: " RESET);ff;
     test_file_diff("./tests/multi_thread/find/exp_find_2.txt","./.testout/exp_find_2.txt");
     printf(YELLOW "Thread 3: " RESET);ff;
-    test_file_diff("./tests/multi_thread/find/exp_find_3.txt","./.testout/exp_find_2.txt");
+    test_file_diff("./tests/multi_thread/find/exp_find_3.txt","./.testout/exp_find_3.txt");
 
     // Removing
     printf(YELLOW "Testing Delete..." RESET);ff;

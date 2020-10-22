@@ -1,3 +1,6 @@
+// http://ianfinlayson.net/class/cpsc425/notes/08-read-write
+// https://chameerawijebandara.wordpress.com/2014/07/12/linked-list-with-read-write-locks-for-the-entire-linked-list-in-c/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "trie.h"
@@ -5,7 +8,6 @@
 #include <stdbool.h> 
 #include "common_threads.h"
 int INS_INDEX = 0 ; 
-int flag = 1; 
 
 trie_t init_trie(void){
     // Write your code here
@@ -28,17 +30,10 @@ trie_t init_trie(void){
 
 	
 	#ifndef _NO_HOH_LOCK_TRIE
-	Pthread_mutex_init(&trie->head->node_lock,NULL); 
-	#endif
 
-	#ifndef _S_LOCK_TRIE
-	flag = 0;
+	Pthread_mutex_init(&trie->head->node_lock,NULL); 
+
 	#endif
-	if(flag){
-		#define READER_WRITER
-		pthread_rwlock_t wr_lock;
-		pthread_rwlock_init(&wr_lock, NULL); 
-	}
 	return trie; 
 } 
 
@@ -78,9 +73,8 @@ bool isLastNode(struct node* trie_node){
 void insert(trie_t trie, char* key, int value){
     // Write your code here
 	#ifndef _S_LOCK_TRIE
-	pthread_mutex_lock(&trie->head->node_lock);
+	Pthread_mutex_lock(&trie->head->node_lock);
 	#endif 
-	
 	
     struct node* ins_node = trie->head; 
 
@@ -105,7 +99,7 @@ int find(trie_t trie,char* key, int* val_ptr){
     int length = strlen(key); 
     
 	#ifndef _S_LOCK_TRIE
-	pthread_mutex_lock(&trie->head->node_lock);
+	Pthread_mutex_lock(&trie->head->node_lock);
 	#endif 
 
 	struct node* itr_node = trie->head ; 
@@ -222,7 +216,7 @@ struct node* delete_kv_helper(struct node* itr_node, char *key){
 
 void delete_kv(trie_t trie, char* key){
 		#ifndef _S_LOCK_TRIE
-		pthread_mutex_lock(&trie->head->node_lock);
+		Pthread_mutex_lock(&trie->head->node_lock);
 		#endif 
     	struct node* itr_node = trie->head; 
 		delete_kv_helper (itr_node, key);
@@ -285,7 +279,7 @@ char** keys_with_prefix(trie_t trie, char* prefix){
     // Write your code here
 
 	#ifndef _S_LOCK_TRIE
-	pthread_mutex_lock(&trie->head->node_lock);
+	Pthread_mutex_lock(&trie->head->node_lock);
 	#endif 
 
     INS_INDEX = 0; 
@@ -383,19 +377,20 @@ void delete_trie(trie_t trie){
 	#endif 
 	struct node* itr_node = trie->head; 
 	if(isLastNode(itr_node)){
+		free(trie);
+		trie = NULL;
 		#ifndef _S_LOCK_TRIE
 		Pthread_mutex_unlock(&trie->head->node_lock);
 		#endif 
-		free(trie);
-		trie = NULL;
 		return ; 
 	}
 	delete_trie_helper(itr_node);
+	free(trie);
+	trie = NULL; 
 	#ifndef _S_LOCK_TRIE
 	Pthread_mutex_unlock(&trie->head->node_lock);
 	#endif 
-	free(trie);
-	trie = NULL; 
+	
 	return ; 
 }
 

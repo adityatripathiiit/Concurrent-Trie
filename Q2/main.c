@@ -12,8 +12,35 @@ You may include a function or 2 to ease the printing of tables.
 
 #include "definitions.h"
 
+
 int main()
 {
 	/* code */
+	int size ; 
+	int pages ; 
+	WorkloadsT type;
+	int cache_size ;
+	printf("Please enter the number of pages: "); 
+	scanf(&pages); 
+	printf("\n");
+	printf("Please enter the size of the workload: ");
+	scanf(&size ); 
+	printf("\n");
+	printf("Please enter the type of the workload: ");
+	scanf(&type ); 
+	printf("\n");
+	printf("Please enter the cache size: ");
+	scanf(&cache_size); 
+	printf("\n");
+	struct workload* work_load = generate_workload(type, pages ,size ); 
+	float hit_rate_LRU;
+	float hit_rate_FIFO;
+	float hit_rate_LRU_APPROX ; 
+	float hit_rate_RANDOM; 
+	hit_rate_FIFO = policy_FIFO(work_load, cache_size);
+	hit_rate_LRU = policy_LRU(work_load,cache_size);
+	hit_rate_LRU_APPROX = policy_LRUapprox(work_load, cache_size); 
+	hit_rate_RANDOM = policy_RANDOM(work_load, cache_size); 
+
 	return 0;
 }
