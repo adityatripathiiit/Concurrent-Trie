@@ -37,11 +37,9 @@ void print_table(ft_table_t* table , WorkloadsT type, int cache_size,int size , 
 	sprintf(c6, "%d",size); 
 	sprintf(c7, "%d",pages ); 
 	if(type == LOOP){
-		
 		ft_u8write_ln(table, "LOOP",c5,c6,c7, c3, c2, c1, c4);
 	}
 	else if(type == RANDOM){
-		
 		ft_u8write_ln(table, "RANDOM" ,c5,c6,c7, c3, c2, c1, c4);
 	}
 	else if(type== LOCAL){
@@ -74,27 +72,7 @@ int main()
 	struct workload* work_load_loop = generate_workload(type_loop, pages ,size ); 
 	struct workload* work_load_random = generate_workload(type_random, pages ,size ); 
 	struct workload* work_load_local = generate_workload(type_local, pages ,size ); 
-	// print_workload(work_load); 
-	// work_load->work[0] = 2;
-	// work_load->work[1] = 5;
-	// work_load->work[2] = 10;
-	// work_load->work[3] = 1;
-	// work_load->work[4] = 2;
-	// work_load->work[5] = 2;
-	// work_load->work[6] = 6;
-	// work_load->work[7] = 9;
-	// work_load->work[8] = 1;
-	// work_load->work[9] = 2;
-	// work_load->work[10] = 10;
-	// work_load->work[11] = 2;
-	// work_load->work[12] = 6;
-	// work_load->work[13] = 1;
-	// work_load->work[14] = 2;
-	// work_load->work[15] = 1;
-	// work_load->work[16] = 6;
-	// work_load->work[17] = 9;
-	// work_load->work[18] = 5;
-	// work_load->work[19] = 1;
+
 	
 	float hit_rate_FIFO_LOOP = policy_FIFO(work_load_loop, cache_size);
 	float hit_rate_FIFO_RANDOM = policy_FIFO(work_load_random, cache_size);
@@ -114,6 +92,8 @@ int main()
 	float hit_rate_LRUapprox_RANDOM = policy_LRUapprox(work_load_random, cache_size);
 	float hit_rate_LRUapprox_LOCAL = policy_LRUapprox(work_load_local, cache_size);	
 
+
+
 	ft_table_t *table = ft_create_table();
 	ft_set_border_style(table, FT_NICE_STYLE);
 	ft_set_cell_prop(table, FT_ANY_ROW, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
@@ -125,5 +105,12 @@ int main()
 	print_table(table,RANDOM,cache_size, size ,pages, hit_rate_FIFO_RANDOM,hit_rate_LRU_RANDOM,hit_rate_LRUapprox_RANDOM,hit_rate_RANDOM_RANDOM); 
 	printf("%s\n", (const char *)ft_to_u8string(table));
 	ft_destroy_table(table);
+
+
+	loop_csv(work_load_loop); 
+	random_csv(work_load_random); 
+	local_csv(work_load_local); 
+
+
 	return 0;
 }

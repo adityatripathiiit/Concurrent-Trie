@@ -16,6 +16,7 @@ You may add extra definitions as required.
 #include <time.h>
 #include <math.h>
 #include "fort.h"
+#include <string.h>
 //----------------------------------------------------------------
 //----------------------------------------------------------------
 /* ALL ENUMERATORS HERE */
@@ -55,5 +56,9 @@ float policy_FIFO(struct workload * w, int cache_size);
 float policy_LRU(struct workload * w, int cache_size);
 float policy_RANDOM(struct workload * w, int cache_size);
 float policy_LRUapprox(struct workload * w, int cache_size);
+
+void loop_csv(struct workload* work_load);
+void random_csv(struct workload* work_load);
+void local_csv(struct workload* work_load);
 
 #endif /* __DEF_H__ */
