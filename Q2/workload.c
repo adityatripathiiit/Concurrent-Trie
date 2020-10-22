@@ -83,6 +83,14 @@ struct workload * generate_local(struct workload * w)
     for(int i=0; i<left; i++){
         work_array[major+minor+i] = i ; 
     }
+
+    for(int i=0; i<pages; i++){
+        int rand_index = rand()%pages;
+        int temp = work_array[i];
+        work_array[i] = work_array[rand_index]; 
+        work_array[rand_index] = temp; 
+    }
+
     w->work = work_array; 
     return w;
 }

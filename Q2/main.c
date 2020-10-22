@@ -13,26 +13,35 @@ You may include a function or 2 to ease the printing of tables.
 #include "definitions.h"
 
 
+void print_workload(struct workload* work_load){
+	for(int i=0; i<work_load->pages; i++){
+		printf("%d ", work_load->work[i]); 
+	}
+	printf("\n"); 
+}
+
+
 int main()
 {
 	/* code */
 	int size ; 
 	int pages ; 
-	WorkloadsT type;
+	WorkloadsT type = RANDOM; 
 	int cache_size ;
 	printf("Please enter the number of pages: "); 
-	scanf(&pages); 
+	scanf("%d", &pages); 
 	printf("\n");
 	printf("Please enter the size of the workload: ");
-	scanf(&size ); 
+	scanf("%d", &size ); 
 	printf("\n");
-	printf("Please enter the type of the workload: ");
-	scanf(&type ); 
-	printf("\n");
+	// printf("Please enter the type of the workload: ");
+	// scanf("%u",&type ); 
+	// printf("\n");
 	printf("Please enter the cache size: ");
-	scanf(&cache_size); 
+	scanf("%d", &cache_size); 
 	printf("\n");
 	struct workload* work_load = generate_workload(type, pages ,size ); 
+	print_workload(work_load); 
 	float hit_rate_LRU;
 	float hit_rate_FIFO;
 	float hit_rate_LRU_APPROX ; 
