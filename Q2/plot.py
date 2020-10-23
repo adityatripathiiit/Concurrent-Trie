@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import csv
 from scipy.interpolate import make_interp_spline,BSpline
+import numpy as np
 
 def plot_graph(flag):
 
@@ -21,7 +22,7 @@ def plot_graph(flag):
     spl = make_interp_spline(x, y, k=3)
     y_smooth = spl(x_new)
 
-    plt.plot(x_new,y_smooth, color="orange", label="FIFO", linewidth=2)
+    plt.plot(x_new,y_smooth, color="orange", label="FIFO", linewidth=1.5)
 
     x=[]
     y=[]
@@ -35,7 +36,7 @@ def plot_graph(flag):
     spl = make_interp_spline(x, y, k=3)
     y_smooth = spl(x_new)
 
-    plt.plot(x_new,y_smooth, color="green", label="LRU", linewidth=2) 
+    plt.plot(x_new,y_smooth, color="green", label="LRU", linewidth=1.5) 
     
 
     x=[]
@@ -52,7 +53,7 @@ def plot_graph(flag):
     spl = make_interp_spline(x, y, k=3)
     y_smooth = spl(x_new)
 
-    plt.plot(x_new,y_smooth, color="red", label="LRU APPROX", linewidth=2)
+    plt.plot(x_new,y_smooth, color="red", label="LRU APPROX", linewidth=1.5)
 
     x=[]
     y=[]
@@ -66,15 +67,15 @@ def plot_graph(flag):
     spl = make_interp_spline(x, y, k=3)
     y_smooth = spl(x_new)
 
-    plt.plot(x_new,y_smooth, color="blue", label="RANDOM", linewidth=2)
+    plt.plot(x_new,y_smooth, color="blue", label="RANDOM", linewidth=1.5)
     
-    plt.title(flag)
+    plt.title(flag+" Work Load comparision")
 
     plt.xlabel('Cache Size')
-    plt.ylabel('Hit Rate(%)')
+    plt.ylabel('Hit Rate (%)')
     plt.legend(loc='best')
 
-    plt.savefig(flag,dpi = 500)
+    plt.savefig("./plots/"+flag,dpi = 600)
     plt.close()
 
 

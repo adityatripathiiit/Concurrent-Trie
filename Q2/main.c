@@ -63,12 +63,10 @@ int main()
 	printf("Please enter the size of the workload: ");
 	scanf("%d", &size ); 
 	printf("\n");
-	// printf("Please enter the type of the workload: ");
-	// scanf("%u",&type ); 
-	// printf("\n");
 	printf("Please enter the cache size: ");
 	scanf("%d", &cache_size); 
 	printf("\n");
+
 	struct workload* work_load_loop = generate_workload(type_loop, pages ,size ); 
 	struct workload* work_load_random = generate_workload(type_random, pages ,size ); 
 	struct workload* work_load_local = generate_workload(type_local, pages ,size ); 
@@ -106,11 +104,11 @@ int main()
 	printf("%s\n", (const char *)ft_to_u8string(table));
 	ft_destroy_table(table);
 
-
+	printf("Creating CSV files ... \n"); 
 	loop_csv(work_load_loop); 
 	random_csv(work_load_random); 
 	local_csv(work_load_local); 
-
+	printf("Done \n"); 
 
 	return 0;
 }
