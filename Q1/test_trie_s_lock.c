@@ -1,11 +1,12 @@
-#define _S_LOCK_TRIE
-#define _NO_HOH_LOCK_TRIE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
 #include "trie.h"
+
+#define _S_LOCK_TRIE
+#define _NO_HOH_LOCK_TRIE
 
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"      /* Green */
