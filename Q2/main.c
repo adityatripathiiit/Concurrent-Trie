@@ -12,7 +12,7 @@ You may include a function or 2 to ease the printing of tables.
 
 #include "definitions.h"
 
-
+// Function to help print any workload
 void print_workload(struct workload* work_load){
 	for(int i=0; i<work_load->pages; i++){
 		printf("%d ", work_load->work[i]); 
@@ -20,9 +20,9 @@ void print_workload(struct workload* work_load){
 	printf("\n"); 
 }
 
-
+// Helper function for priting table
 void print_table(ft_table_t* table , WorkloadsT type, int cache_size,int size , int pages, float hit_rate_fifo, float hit_rate_lru, float hit_rate_approx_lru, float hit_rate_random){
-	char c1[50]; //size of the number
+	char c1[50]; 
 	char c2[50]; 
 	char c3[50]; 
 	char c4[50]; 
@@ -52,11 +52,14 @@ int main()
 	/* code */
 	int size ; 
 	int pages ; 
+	// Defining all three type of workloads
 	WorkloadsT type_loop = LOOP; 
 	WorkloadsT type_random = RANDOM; 
 	WorkloadsT type_local = LOCAL ; 
+	// Seeding for random number generation
 	srand (time(NULL));
 	int cache_size ;
+	// Taking input: The number of pages, The size of workload, and the cache-size
 	printf("Please enter the number of pages: "); 
 	scanf("%d", &pages); 
 	printf("\n");
@@ -67,11 +70,13 @@ int main()
 	scanf("%d", &cache_size); 
 	printf("\n");
 
+	// Storing the respective workloads, by calling the specific workload generation functions
 	struct workload* work_load_loop = generate_workload(type_loop, pages ,size ); 
 	struct workload* work_load_random = generate_workload(type_random, pages ,size ); 
 	struct workload* work_load_local = generate_workload(type_local, pages ,size ); 
 
-	
+	// storing the hitrate for all the 12 distinct combinations of policies and workload
+
 	float hit_rate_FIFO_LOOP = policy_FIFO(work_load_loop, cache_size);
 	float hit_rate_FIFO_RANDOM = policy_FIFO(work_load_random, cache_size);
 	float hit_rate_FIFO_LOCAL = policy_FIFO(work_load_local, cache_size);
@@ -91,6 +96,8 @@ int main()
 	float hit_rate_LRUapprox_LOCAL = policy_LRUapprox(work_load_local, cache_size);	
 
 
+	// Tablulating the results to display in a organised manner
+	// With the help of fort library
 
 	ft_table_t *table = ft_create_table();
 	ft_set_border_style(table, FT_NICE_STYLE);
@@ -103,6 +110,8 @@ int main()
 	print_table(table,RANDOM,cache_size, size ,pages, hit_rate_FIFO_RANDOM,hit_rate_LRU_RANDOM,hit_rate_LRUapprox_RANDOM,hit_rate_RANDOM_RANDOM); 
 	printf("%s\n", (const char *)ft_to_u8string(table));
 	ft_destroy_table(table);
+
+	// Creating CSV files for the workload and hitrate data
 
 	printf("Creating CSV files ... \n"); 
 	loop_csv(work_load_loop); 

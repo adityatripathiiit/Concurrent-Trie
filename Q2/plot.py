@@ -1,3 +1,4 @@
+# Python script to generate plots from the CSV files
 import matplotlib.pyplot as plt
 import csv
 from scipy.interpolate import make_interp_spline,BSpline

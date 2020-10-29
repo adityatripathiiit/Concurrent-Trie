@@ -115,7 +115,7 @@ int main(int argc, char* argv[]){
     FILE* pref_test_exp = fopen(pref_test_exp_name,"w");
     while (1)
     {
-        char** list;
+        char** list = NULL;
         fscanf(pref_test,"%s",key);
         if (key[0]=='-') break;
         list = keys_with_prefix(trie, key);
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
         }
         while(list[i]!=NULL){
             fprintf(pref_test_exp,"%s\n",list[i]);
-            // free(list[i]);
+            free(list[i]);
             i++;
         }
         free(list);
