@@ -367,7 +367,8 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 	{ 
 		
 		list[*INS_INDEX] = malloc((strlen(currPrefix)+2)*sizeof(char)); 
-		list[*INS_INDEX] = currPrefix; 
+		// list[*INS_INDEX] = currPrefix; 
+		strcpy(list[*INS_INDEX], currPrefix); 
 		(*INS_INDEX)++; 
         // printf("%s\n", list[INS_INDEX]); 
         // printf("%d\n", INS_INDEX); 
@@ -379,22 +380,29 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 
 	for (int i = 0; i < ALPHABET_SIZE; i++) 
 	{ 
-		if (trie_node->children[i]) 
+		if (trie_node->children[i]!= NULL) 
 		{ 
-			if (trie_node->children[i]!= NULL) 
-			{ 
-				#ifndef _NO_HOH_LOCK_TRIE
-				if(trie_node->children[i]) Pthread_mutex_lock(&trie_node->children[i]->node_lock); 
-				Pthread_mutex_unlock(&trie_node->node_lock);
-				#endif 
-				suggestionsRec(trie_node->children[i], append(currPrefix, i+97), list,INS_INDEX); 
-				#ifndef _NO_HOH_LOCK_TRIE
-				if(trie_node->children[i]) Pthread_mutex_unlock(&trie_node->children[i]->node_lock); 
-				Pthread_mutex_lock(&trie_node->node_lock);
-				#endif 
-			} 
-		}	 
-	} 
+			#ifndef _NO_HOH_LOCK_TRIE
+			if(trie_node->children[i]) Pthread_mutex_lock(&trie_node->children[i]->node_lock); 
+			Pthread_mutex_unlock(&trie_node->node_lock);
+			#endif 
+			
+			char *str = malloc (sizeof (char) * (strlen (currPrefix) + 2));
+			strcpy(str,currPrefix);
+			int j = strlen(currPrefix);
+			str[j++] = i+97;
+			str[j] = '\0';
+			
+			// suggestionsRec(trie_node->children[i], append(currPrefix, i+97), list,INS_INDEX); 
+			suggestionsRec(trie_node->children[i], str, list,INS_INDEX); 
+			free(str);
+			#ifndef _NO_HOH_LOCK_TRIE
+			if(trie_node->children[i]) Pthread_mutex_unlock(&trie_node->children[i]->node_lock); 
+			Pthread_mutex_lock(&trie_node->node_lock);
+			#endif 
+		} 
+
+	}
 }
 
 char** keys_with_prefix(trie_t trie, char* prefix){
@@ -576,20 +584,19 @@ void delete_trie_helper(struct node* itr_node){
 	
 	for(int level = 0 ; level<ALPHABET_SIZE; level++){
 		if(itr_node->children[level] !=NULL){
-			#ifndef _NO_HOH_LOCK_TRIE
-			if(itr_node->children[level]) Pthread_mutex_lock(&itr_node->children[level]->node_lock); 
-			Pthread_mutex_unlock(&itr_node->node_lock);
-			#endif 
+			// #ifndef _NO_HOH_LOCK_TRIE
+			// Pthread_mutex_lock(&itr_node->children[level]->node_lock); 
+			// Pthread_mutex_unlock(&itr_node->node_lock);
+			// #endif 
 			delete_trie_helper(itr_node->children[level]); 
-			#ifndef _NO_HOH_LOCK_TRIE
-			if(itr_node->children[level])Pthread_mutex_unlock(&itr_node->children[level]->node_lock); 
-			Pthread_mutex_lock(&itr_node->node_lock);
-			#endif 
+			// #ifndef _NO_HOH_LOCK_TRIE
+			// Pthread_mutex_lock(&itr_node->node_lock);
+			// #endif 
 		}
 	}
 
 	if(isLastNode(itr_node)){
-		
+		Pthread_mutex_unlock(&itr_node->node_lock); 
 		free(itr_node); 
 		itr_node = NULL; 
 		return ; 
@@ -610,9 +617,9 @@ void delete_trie(trie_t trie){
 	#endif 
 	#endif 
 
-	#ifndef _NO_HOH_LOCK_TRIE	
-	Pthread_mutex_lock(&trie->head->node_lock);
-	#endif 
+	// #ifndef _NO_HOH_LOCK_TRIE	
+	// Pthread_mutex_lock(&trie->head->node_lock);
+	// #endif 
 
 	struct node* itr_node = trie->head; 
 	if(isLastNode(itr_node)){
@@ -650,9 +657,9 @@ void delete_trie(trie_t trie){
 	#endif 
 	#endif 
 
-	#ifndef _NO_HOH_LOCK_TRIE
-	Pthread_mutex_unlock(&itr_node->node_lock);
-	#endif 
+	// #ifndef _NO_HOH_LOCK_TRIE
+	// Pthread_mutex_unlock(&itr_node->node_lock);
+	// #endif 
 		
 
 	free(trie);
