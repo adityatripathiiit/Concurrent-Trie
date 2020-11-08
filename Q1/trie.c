@@ -9,6 +9,10 @@
 // #define _NO_HOH_LOCK_TRIE
 // int INS_INDEX = 0 ; 
 
+
+#define _S_LOCK_TRIE
+#define _NO_HOH_LOCK_TRIE
+
 pthread_mutex_t global_lock;
 pthread_rwlock_t wr_lock;
 
@@ -596,7 +600,7 @@ void delete_trie_helper(struct node* itr_node){
 	}
 
 	if(isLastNode(itr_node)){
-		Pthread_mutex_unlock(&itr_node->node_lock); 
+		// Pthread_mutex_unlock(&itr_node->node_lock); 
 		free(itr_node); 
 		itr_node = NULL; 
 		return ; 
@@ -635,9 +639,9 @@ void delete_trie(trie_t trie){
 		#endif 
 		#endif 
 		
-		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_unlock(&itr_node->node_lock);
-		#endif 
+		// #ifndef _NO_HOH_LOCK_TRIE
+		// Pthread_mutex_unlock(&itr_node->node_lock);
+		// #endif 
 
 		free(trie);
 		trie = NULL;
