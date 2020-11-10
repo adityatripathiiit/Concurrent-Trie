@@ -10,8 +10,8 @@
 // int INS_INDEX = 0 ; 
 
 
-#define _S_LOCK_TRIE
-#define _NO_HOH_LOCK_TRIE
+// #define _S_LOCK_TRIE
+// #define _NO_HOH_LOCK_TRIE
 
 pthread_mutex_t global_lock;
 pthread_rwlock_t wr_lock;
