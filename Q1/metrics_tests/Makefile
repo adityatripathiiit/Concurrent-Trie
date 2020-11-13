@@ -11,8 +11,9 @@ TARGET3 := hoh_lock_test_metrics.c
 help:
 	@echo make build : To build all the files 
 	@echo make exec : To execute the build files 
-	@echo make clean : To clean the build files
+	@echo make plot : To generate plot 
 	@echo make workload : To generate workload
+	@echo make clean : To clean the build files
 
 build: 
 	@echo "Building ..."

@@ -11,10 +11,10 @@
 int main(int argc, char* argv[]){
     //Test begins
     
-    char key[MAX_TREE_SIZE +5];
-    for(int i=0; i<NUMBER_OF_CONCURRENT_THREADS; i++){
-        narr[i] = i+1;
-    }
+    // char key[MAX_TREE_SIZE +5];
+    // for(int i=0; i<NUMBER_OF_CONCURRENT_THREADS; i++){
+    //     narr[i] = i+1;
+    // }
 
     struct timeval start, end; 
 
@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
         return 0;
     }
 
-    for(int i=0; i<NUMBER_OF_CONCURRENT_THREADS; i++){
+    for(int i=1; i<=NUMBER_OF_CONCURRENT_THREADS; i++){
         
         // start timer. 
         gettimeofday(&start, NULL);
@@ -35,8 +35,13 @@ int main(int argc, char* argv[]){
         trie = init_trie();
 
         ins_parent(i);
+        // find_parent(i);
+        // find_parent(i);
         find_parent(i);
+        // find_parent(i);
         rem_parent(i);
+        // pref_parent(i);
+        // pref_parent(i);
         pref_parent(i);
 
         gettimeofday(&end, NULL);
@@ -48,7 +53,7 @@ int main(int argc, char* argv[]){
         time_taken = (time_taken + (end.tv_usec -start.tv_usec)) * 1e-6; 
         delete_trie(trie);
 
-        fprintf(f,"%d,%f\n",i+1, time_taken);
+        fprintf(f,"%d,%f\n",i, time_taken);
         
     }
 

@@ -5,13 +5,6 @@
 #include <stdbool.h> 
 #include "common_threads.h"
 
-// #define _S_LOCK_TRIE
-// #define _NO_HOH_LOCK_TRIE
-// int INS_INDEX = 0 ; 
-
-
-// #define _S_LOCK_TRIE
-// #define _NO_HOH_LOCK_TRIE
 
 pthread_mutex_t global_lock;
 pthread_rwlock_t wr_lock;
@@ -130,7 +123,6 @@ void insert(trie_t trie, char* key, int value){
 	} 
 
     ins_node->value = value ; 
-	
 	// mark last node as leaf 
 	ins_node->is_end = true; 
 	#ifndef _NO_HOH_LOCK_TRIE
@@ -249,18 +241,19 @@ int find(trie_t trie,char* key, int* val_ptr){
 
 struct node* delete_kv_helper(struct node* itr_node, char *key){
 	
-	if(itr_node == NULL)
+	if(itr_node == NULL){
 		// #ifndef _NO_HOH_LOCK_TRIE
 		// Pthread_mutex_unlock(&itr_node);
-		// #endif 
+		// #endif
 		return itr_node;
+	}
 	
 	if(*key){
+		// printf("%s \n", key);
 		#ifndef _NO_HOH_LOCK_TRIE
 		if(itr_node->children[CHAR_TO_INDEX(*key)]) Pthread_mutex_lock(&itr_node->children[(CHAR_TO_INDEX(*key))]->node_lock); 
 		Pthread_mutex_unlock(&itr_node->node_lock); 
 		#endif 
-
 		itr_node->children[(CHAR_TO_INDEX(*key))] = delete_kv_helper(itr_node->children[CHAR_TO_INDEX(*key)], key+1);
 		#ifndef _NO_HOH_LOCK_TRIE
 		if(itr_node){
@@ -270,7 +263,6 @@ struct node* delete_kv_helper(struct node* itr_node, char *key){
 		}
 		
 		#endif 
-		
 		if(itr_node->is_end == 0 && isLastNode(itr_node)){
 			#ifndef _NO_HOH_LOCK_TRIE
 			Pthread_mutex_unlock(&itr_node->node_lock);
@@ -279,6 +271,7 @@ struct node* delete_kv_helper(struct node* itr_node, char *key){
 			itr_node = NULL;
 		}
 	}
+		
 
 	if(*key == '\0'){
 
@@ -374,8 +367,6 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 		// list[*INS_INDEX] = currPrefix; 
 		strcpy(list[*INS_INDEX], currPrefix); 
 		(*INS_INDEX)++; 
-        // printf("%s\n", list[INS_INDEX]); 
-        // printf("%d\n", INS_INDEX); 
 	} 
 
 	// All children struct node pointers are NULL 
@@ -509,7 +500,7 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 	// matching node. 
 	if (isWord && isLast) 
 	{   
-		// printf("%s\n", prefix); 
+		
 		list[*INS_INDEX] = malloc((strlen(prefix)+2)*sizeof(char)); 
 		list[*INS_INDEX] = prefix; 
 		(*INS_INDEX)++;
@@ -599,7 +590,7 @@ void delete_trie_helper(struct node* itr_node){
 		}
 	}
 
-	if(isLastNode(itr_node)){
+	if(isLastNode(itr_node) || itr_node != NULL){
 		// Pthread_mutex_unlock(&itr_node->node_lock); 
 		free(itr_node); 
 		itr_node = NULL; 
@@ -625,8 +616,8 @@ void delete_trie(trie_t trie){
 	// Pthread_mutex_lock(&trie->head->node_lock);
 	// #endif 
 
-	struct node* itr_node = trie->head; 
-	if(isLastNode(itr_node)){
+	
+	if(trie == NULL || trie->head == NULL || isLastNode(trie->head)){
 		#ifdef _NO_HOH_LOCK_TRIE
 		#ifdef _S_LOCK_TRIE 
 		Pthread_mutex_unlock(&global_lock);
@@ -647,6 +638,7 @@ void delete_trie(trie_t trie){
 		trie = NULL;
 		return ; 
 	}
+	struct node* itr_node = trie->head; 
 	delete_trie_helper(itr_node);
 
 	#ifdef _NO_HOH_LOCK_TRIE
