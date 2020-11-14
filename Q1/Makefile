@@ -50,7 +50,7 @@ $(MT_TARGETS): % : test_trie_%
 	@echo "-------------------------------------------"
 	@cat ./.testout/heltest_out_$<
 
-clean: 
+clean:
 	rm -f $(B_TARGETS)
 	rm -f -r ./.testout
 	rm -f -r ./test_trie_rw_lock.c

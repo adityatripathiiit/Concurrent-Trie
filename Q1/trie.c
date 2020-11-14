@@ -11,6 +11,7 @@ pthread_rwlock_t wr_lock;
 
 trie_t init_trie(void){
     // Write your code here
+
     _trie_t* trie =  ( _trie_t*) malloc(sizeof( _trie_t)); 
 	if(trie == NULL){
 		printf("unable to create trie\n"); 
@@ -79,15 +80,11 @@ bool isLastNode(struct node* trie_node){
 			return 0; 
 		}
 	}
-		
 	return 1; 
 } 
 
 void insert(trie_t trie, char* key, int value){
     // Write your code here
-	// #ifndef _NO_HOH_LOCK_TRIE
-	// Pthread_mutex_lock(&trie->head->node_lock);
-	// #endif 
 	
 	#ifdef _NO_HOH_LOCK_TRIE
 	#ifdef _S_LOCK_TRIE 
@@ -107,7 +104,6 @@ void insert(trie_t trie, char* key, int value){
 	#endif
 
     struct node* ins_node = trie->head; 
-
 
 	for (int level = 0; level < strlen(key); level++) 
 	{ 
@@ -144,7 +140,8 @@ void insert(trie_t trie, char* key, int value){
 
 int find(trie_t trie,char* key, int* val_ptr){
     // Write your code here
-    int length = strlen(key); 
+    
+	int length = strlen(key); 
     
 	#ifdef _NO_HOH_LOCK_TRIE
 	#ifdef _S_LOCK_TRIE 
@@ -239,64 +236,64 @@ int find(trie_t trie,char* key, int* val_ptr){
 } 
 
 
-struct node* delete_kv_helper(struct node* itr_node, char *key){
+struct node* delete_kv_helper(struct node* itr_node, char *key, struct node* parent){
 	
 	if(itr_node == NULL){
-		// #ifndef _NO_HOH_LOCK_TRIE
-		// Pthread_mutex_unlock(&itr_node);
-		// #endif
 		return itr_node;
 	}
 	
+	#ifndef _NO_HOH_LOCK_TRIE
+	Pthread_mutex_lock(&itr_node->node_lock);
+	Pthread_mutex_unlock(&parent->node_lock); 
+	#endif 
+	
 	if(*key){
-		// printf("%s \n", key);
-		#ifndef _NO_HOH_LOCK_TRIE
-		if(itr_node->children[CHAR_TO_INDEX(*key)]) Pthread_mutex_lock(&itr_node->children[(CHAR_TO_INDEX(*key))]->node_lock); 
-		Pthread_mutex_unlock(&itr_node->node_lock); 
-		#endif 
-		itr_node->children[(CHAR_TO_INDEX(*key))] = delete_kv_helper(itr_node->children[CHAR_TO_INDEX(*key)], key+1);
-		#ifndef _NO_HOH_LOCK_TRIE
-		if(itr_node){
-			if(itr_node->children[CHAR_TO_INDEX(*key)]) Pthread_mutex_unlock(&itr_node->children[(CHAR_TO_INDEX(*key))]->node_lock); 
-			Pthread_mutex_lock(&itr_node->node_lock); 
-			
-		}
 		
-		#endif 
+		itr_node->children[(CHAR_TO_INDEX(*key))] = delete_kv_helper(itr_node->children[CHAR_TO_INDEX(*key)], key+1, itr_node);
+
 		if(itr_node->is_end == 0 && isLastNode(itr_node)){
-			#ifndef _NO_HOH_LOCK_TRIE
-			Pthread_mutex_unlock(&itr_node->node_lock);
-			#endif
-			free(itr_node);
-			itr_node = NULL;
+			
+				#ifndef _NO_HOH_LOCK_TRIE
+				Pthread_mutex_unlock(&itr_node->node_lock);
+				Pthread_mutex_lock(&parent->node_lock);
+				#endif
+				free(itr_node);
+				itr_node = NULL;
+				
+				return itr_node;
 		}
+
+		#ifndef _NO_HOH_LOCK_TRIE
+		Pthread_mutex_unlock(&itr_node->node_lock);
+		Pthread_mutex_lock(&parent->node_lock);
+		#endif
+		return itr_node;
 	}
 		
 
-	if(*key == '\0'){
-
+	else if(*key == '\0'){
+		
 		itr_node->is_end = 0;
 
 		if(isLastNode(itr_node)){
 			#ifndef _NO_HOH_LOCK_TRIE
 			Pthread_mutex_unlock(&itr_node->node_lock);
+			Pthread_mutex_lock(&parent->node_lock);
 			#endif
 
 			free(itr_node);
 			itr_node = NULL;
+			return itr_node;
 		}
 
-		// #ifndef _NO_HOH_LOCK_TRIE
-		// Pthread_mutex_unlock(&itr_node->node_lock);
-		// #endif
-
+		#ifndef _NO_HOH_LOCK_TRIE
+		Pthread_mutex_unlock(&itr_node->node_lock);
+		Pthread_mutex_lock(&parent->node_lock);
+		#endif
 		return itr_node;
 	}
-	// #ifndef _NO_HOH_LOCK_TRIE
-	// Pthread_mutex_unlock(&itr_node->node_lock);
-	// #endif
-
 	return itr_node;
+	
 }
 
 void delete_kv(trie_t trie, char* key){
@@ -317,12 +314,17 @@ void delete_kv(trie_t trie, char* key){
 		#endif
 
     	struct node* itr_node = trie->head; 
-
-		delete_kv_helper (itr_node, key);
+		struct node* parent = trie->head;
+		for( int i=0; i <ALPHABET_SIZE; i++){
+			if(*key == i+'a'){			
+				itr_node->children[i] = delete_kv_helper (itr_node->children[i], key+1,parent);
+			}
+		}
 
 		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_unlock(&itr_node->node_lock);
+			Pthread_mutex_unlock(&itr_node->node_lock);
 		#endif
+		
 
 		#ifdef _NO_HOH_LOCK_TRIE
 		#ifdef _S_LOCK_TRIE 
@@ -357,6 +359,7 @@ char *append (char *slice, char part) {
 }
 
 
+
 void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int * INS_INDEX) 
 { 
 	// found a string in Trie with the given prefix 
@@ -364,7 +367,6 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 	{ 
 		
 		list[*INS_INDEX] = malloc((strlen(currPrefix)+2)*sizeof(char)); 
-		// list[*INS_INDEX] = currPrefix; 
 		strcpy(list[*INS_INDEX], currPrefix); 
 		(*INS_INDEX)++; 
 	} 
@@ -388,7 +390,6 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 			str[j++] = i+97;
 			str[j] = '\0';
 			
-			// suggestionsRec(trie_node->children[i], append(currPrefix, i+97), list,INS_INDEX); 
 			suggestionsRec(trie_node->children[i], str, list,INS_INDEX); 
 			free(str);
 			#ifndef _NO_HOH_LOCK_TRIE
@@ -500,7 +501,7 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 	// matching node. 
 	if (isWord && isLast) 
 	{   
-		
+		// printf("%s\n", prefix); 
 		list[*INS_INDEX] = malloc((strlen(prefix)+2)*sizeof(char)); 
 		list[*INS_INDEX] = prefix; 
 		(*INS_INDEX)++;
@@ -573,7 +574,6 @@ char** keys_with_prefix(trie_t trie, char* prefix){
     return list ;
 }
 
-
 void delete_trie_helper(struct node* itr_node){
 	if(itr_node == NULL ) return ;
 	
@@ -639,7 +639,10 @@ void delete_trie(trie_t trie){
 		return ; 
 	}
 	struct node* itr_node = trie->head; 
+	
 	delete_trie_helper(itr_node);
+	
+	
 
 	#ifdef _NO_HOH_LOCK_TRIE
 	#ifdef _S_LOCK_TRIE 
@@ -654,7 +657,8 @@ void delete_trie(trie_t trie){
 	#endif 
 
 	// #ifndef _NO_HOH_LOCK_TRIE
-	// Pthread_mutex_unlock(&itr_node->node_lock);
+	
+	// // Pthread_mutex_unlock(&itr_node->node_lock);
 	// #endif 
 		
 
@@ -664,7 +668,7 @@ void delete_trie(trie_t trie){
 }
 
 // void printList(char ** temp){ 
-//     for(int i= 0; i < *INS_INDEX; i++) {
+//     for(int i= 0; i < 3; i++) {
 //         printf("%s\n", temp[i]); 
 //     }
 // }
@@ -687,14 +691,14 @@ void delete_trie(trie_t trie){
 // 	insert(trie, "a",0); 
 // 	insert(trie, "aaa",0); 
 //     int* ptr = (int*)malloc(sizeof(int)) ;
-// 	delete_kv(trie, "helps"); 
-// 	delete_kv(trie, "help"); 
+// 	// delete_kv(trie, "helps"); 
+// 	// delete_kv(trie, "help"); 
 // 	printf("%d\n", find(trie, "helps", ptr)) ; 
 // 	printf("%d\n", find(trie, "help", ptr)) ; 
 // 	printf("%d\n", find(trie, "helping", ptr)) ; 
 // 	printf("%d\n", find(trie, "hel", ptr)) ; 
 // 	printf("%d\n", find(trie, "dog", ptr)) ; 
-//     char ** temp = keys_with_prefix(trie, "a"); 
+//     char ** temp = keys_with_prefix(trie, "h"); 
 //     printList(temp);
 //     delete_trie(trie); 
 //     return 0 ; 

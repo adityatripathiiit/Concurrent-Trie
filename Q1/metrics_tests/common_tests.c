@@ -1,6 +1,6 @@
 #include "../trie.c"
 #include "../trie.h"
-#define NUMBER_OF_CONCURRENT_THREADS 100 
+#define NUMBER_OF_CONCURRENT_THREADS 10 
 #define MAX_TREE_SIZE 4
 trie_t trie; 
 // int narr[NUMBER_OF_CONCURRENT_THREADS];
