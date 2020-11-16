@@ -99,11 +99,13 @@ void insert(trie_t trie, char* key, int value){
 	#endif 
 	#endif 
 
+	struct node* ins_node = trie->head;
+
 	#ifndef _NO_HOH_LOCK_TRIE
-	Pthread_mutex_lock(&trie->head->node_lock); 
+	Pthread_mutex_lock(&ins_node->node_lock); 
+	
 	#endif
 
-    struct node* ins_node = trie->head; 
 
 	for (int level = 0; level < strlen(key); level++) 
 	{ 
@@ -111,11 +113,15 @@ void insert(trie_t trie, char* key, int value){
 		if (ins_node->children[index] == NULL){ 
 			ins_node->children[index] = create_node();
 		}
-		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_lock(&ins_node->children[index]->node_lock); 
-		Pthread_mutex_unlock(&ins_node->node_lock);
-		#endif 
+		struct node* temp = ins_node;
+		
 		ins_node = ins_node->children[index]; 
+
+		#ifndef _NO_HOH_LOCK_TRIE
+		Pthread_mutex_lock(&ins_node->node_lock); 
+		Pthread_mutex_unlock(&temp->node_lock);
+		#endif 
+	
 	} 
 
     ins_node->value = value ; 
@@ -143,6 +149,9 @@ int find(trie_t trie,char* key, int* val_ptr){
     
 	int length = strlen(key); 
     
+	
+	if(trie->head == NULL) return -1; 
+	
 	#ifdef _NO_HOH_LOCK_TRIE
 	#ifdef _S_LOCK_TRIE 
 	Pthread_mutex_lock(&global_lock);
@@ -155,12 +164,11 @@ int find(trie_t trie,char* key, int* val_ptr){
 	#endif 
 	#endif 
 
-	if(trie->head == NULL) return -1; 
+	struct node* itr_node = trie->head ; 
 
 	#ifndef _NO_HOH_LOCK_TRIE
-	Pthread_mutex_lock(&trie->head->node_lock); 
+	Pthread_mutex_lock(&itr_node->node_lock); 
 	#endif
-	struct node* itr_node = trie->head ; 
 
 	for (int level = 0; level < length; level++) 
 	{ 
@@ -185,13 +193,15 @@ int find(trie_t trie,char* key, int* val_ptr){
 
 			return -1; 
 		} 
-
-		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_lock(&itr_node->children[index]->node_lock); 
-		Pthread_mutex_unlock(&itr_node->node_lock);
-		#endif 
+		struct node* temp = itr_node;
 
 		itr_node = itr_node->children[index]; 
+		
+		#ifndef _NO_HOH_LOCK_TRIE
+		Pthread_mutex_lock(&itr_node->node_lock); 
+		Pthread_mutex_unlock(&temp->node_lock);
+		#endif 
+
 	} 
 
     if(itr_node != NULL && itr_node->is_end){
@@ -236,38 +246,35 @@ int find(trie_t trie,char* key, int* val_ptr){
 } 
 
 
-struct node* delete_kv_helper(struct node* itr_node, char *key, struct node* parent){
+struct node* delete_kv_helper(struct node* itr_node, char *key){
 	
 	if(itr_node == NULL){
 		return itr_node;
 	}
 	
 	#ifndef _NO_HOH_LOCK_TRIE
-	Pthread_mutex_lock(&itr_node->node_lock);
-	Pthread_mutex_unlock(&parent->node_lock); 
-	#endif 
-	
+		Pthread_mutex_lock(&itr_node->node_lock);
+	#endif
+
 	if(*key){
 		
-		itr_node->children[(CHAR_TO_INDEX(*key))] = delete_kv_helper(itr_node->children[CHAR_TO_INDEX(*key)], key+1, itr_node);
+		itr_node->children[(CHAR_TO_INDEX(*key))] = delete_kv_helper(itr_node->children[CHAR_TO_INDEX(*key)], key+1);
 
 		if(itr_node->is_end == 0 && isLastNode(itr_node)){
-			
+
 				#ifndef _NO_HOH_LOCK_TRIE
 				Pthread_mutex_unlock(&itr_node->node_lock);
-				Pthread_mutex_lock(&parent->node_lock);
-				// pthread_mutex_destroy(&itr_node->node_lock);
+				pthread_mutex_destroy(&itr_node->node_lock);
 				#endif
 				free(itr_node);
 				itr_node = NULL;
 				
 				return itr_node;
 		}
-
 		#ifndef _NO_HOH_LOCK_TRIE
 		Pthread_mutex_unlock(&itr_node->node_lock);
-		Pthread_mutex_lock(&parent->node_lock);
 		#endif
+
 		return itr_node;
 	}
 		
@@ -279,20 +286,20 @@ struct node* delete_kv_helper(struct node* itr_node, char *key, struct node* par
 		if(isLastNode(itr_node)){
 			#ifndef _NO_HOH_LOCK_TRIE
 			Pthread_mutex_unlock(&itr_node->node_lock);
-			Pthread_mutex_lock(&parent->node_lock);
+			pthread_mutex_destroy(&itr_node->node_lock);
 			#endif
-
 			free(itr_node);
 			itr_node = NULL;
 			return itr_node;
 		}
-
 		#ifndef _NO_HOH_LOCK_TRIE
 		Pthread_mutex_unlock(&itr_node->node_lock);
-		Pthread_mutex_lock(&parent->node_lock);
 		#endif
+
 		return itr_node;
 	}
+
+
 	return itr_node;
 	
 }
@@ -310,22 +317,18 @@ void delete_kv(trie_t trie, char* key){
 		#endif 
 		#endif
 
+    	struct node* itr_node = trie->head; 
+		
 		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_lock(&trie->head->node_lock ); 
+		Pthread_mutex_lock(&itr_node->node_lock ); 
 		#endif
 
-    	struct node* itr_node = trie->head; 
-		struct node* parent = trie->head;
+	
 		for( int i=0; i <ALPHABET_SIZE; i++){
-			if(*key == i+'a'){			
-				itr_node->children[i] = delete_kv_helper (itr_node->children[i], key+1,parent);
+			if((*key == i+'a') && itr_node->children[i]){
+				itr_node->children[i] =  delete_kv_helper (itr_node->children[i], key+1);
 			}
 		}
-
-		#ifndef _NO_HOH_LOCK_TRIE
-			Pthread_mutex_unlock(&itr_node->node_lock);
-		#endif
-		
 
 		#ifdef _NO_HOH_LOCK_TRIE
 		#ifdef _S_LOCK_TRIE 
@@ -338,6 +341,9 @@ void delete_kv(trie_t trie, char* key){
 		pthread_rwlock_unlock(&wr_lock); 
 		#endif 
 		#endif 
+		#ifndef _NO_HOH_LOCK_TRIE
+		Pthread_mutex_unlock(&itr_node->node_lock ); 
+		#endif
 
 		return ; 
 }
@@ -366,7 +372,6 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 	// found a string in Trie with the given prefix 
 	if (trie_node->is_end) 
 	{ 
-		
 		list[*INS_INDEX] = malloc((strlen(currPrefix)+2)*sizeof(char)); 
 		strcpy(list[*INS_INDEX], currPrefix); 
 		(*INS_INDEX)++; 
@@ -380,23 +385,27 @@ void suggestionsRec(struct node* trie_node, char* currPrefix, char** list, int *
 	{ 
 		if (trie_node->children[i]!= NULL) 
 		{ 
+			struct node* child = trie_node->children[i];
 			#ifndef _NO_HOH_LOCK_TRIE
-			if(trie_node->children[i]) Pthread_mutex_lock(&trie_node->children[i]->node_lock); 
-			Pthread_mutex_unlock(&trie_node->node_lock);
-			#endif 
-			
+            pthread_mutex_lock(&child->node_lock);
+			#endif
 			char *str = malloc (sizeof (char) * (strlen (currPrefix) + 2));
 			strcpy(str,currPrefix);
 			int j = strlen(currPrefix);
 			str[j++] = i+97;
 			str[j] = '\0';
-			
-			suggestionsRec(trie_node->children[i], str, list,INS_INDEX); 
-			free(str);
+
 			#ifndef _NO_HOH_LOCK_TRIE
-			if(trie_node->children[i]) Pthread_mutex_unlock(&trie_node->children[i]->node_lock); 
-			Pthread_mutex_lock(&trie_node->node_lock);
-			#endif 
+            pthread_mutex_unlock(&trie_node->node_lock);
+			#endif
+			suggestionsRec(child, str, list,INS_INDEX); 
+
+			#ifndef _NO_HOH_LOCK_TRIE
+            pthread_mutex_unlock(&child->node_lock);
+			pthread_mutex_lock(&trie_node->node_lock);
+			#endif
+
+			free(str);
 		} 
 
 	}
@@ -427,11 +436,12 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 	#endif 
 	#endif 
 	
+	struct node* itr_node = trie->head; 
+
 	#ifndef _NO_HOH_LOCK_TRIE
-	Pthread_mutex_lock(&trie->head->node_lock); 
+	Pthread_mutex_lock(&itr_node->node_lock); 
 	#endif 
 		
-	struct node* itr_node = trie->head; 
 	if(itr_node == NULL){
 
 		#ifdef _S_LOCK_TRIE
@@ -445,12 +455,13 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 		#endif 
 
 		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_unlock(&trie->head->node_lock); 
+		Pthread_mutex_unlock(&itr_node->node_lock); 
 		#endif 
 
 		free(INS_INDEX)	;
 		return list; 
 	}
+
 	// Check if prefix is present and find the 
 	// the node (of last level) with last character 
 	// of given string. 
@@ -481,14 +492,19 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 			free(INS_INDEX)	;
 			return list; 
 		}
+		struct node* temp = itr_node;
+		itr_node = itr_node->children[index]; 
 			
 		#ifndef _NO_HOH_LOCK_TRIE
-		Pthread_mutex_lock(&itr_node->children[index]->node_lock); 
-		Pthread_mutex_unlock(&itr_node->node_lock);
+		Pthread_mutex_lock(&itr_node->node_lock); 
+		Pthread_mutex_unlock(&temp->node_lock);
 		#endif 
-		itr_node = itr_node->children[index]; 
 	} 
-
+	
+	// #ifndef _NO_HOH_LOCK_TRIE
+	
+	// Pthread_mutex_unlock(&itr_node->node_lock); 
+	// #endif 
     
 	// If prefix is present as a word. 
 	bool isWord = (itr_node->is_end == true); 
@@ -531,7 +547,7 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 	// matching character. 
 	if (!isLast) 
 	{ 	
-
+		
 		suggestionsRec(itr_node, prefix ,list,INS_INDEX); 
 		list[*INS_INDEX] = NULL; 
 
@@ -580,19 +596,14 @@ void delete_trie_helper(struct node* itr_node){
 	
 	for(int level = 0 ; level<ALPHABET_SIZE; level++){
 		if(itr_node->children[level] !=NULL){
-			// #ifndef _NO_HOH_LOCK_TRIE
-			// Pthread_mutex_lock(&itr_node->children[level]->node_lock); 
-			// Pthread_mutex_unlock(&itr_node->node_lock);
-			// #endif 
 			delete_trie_helper(itr_node->children[level]); 
-			// #ifndef _NO_HOH_LOCK_TRIE
-			// Pthread_mutex_lock(&itr_node->node_lock);
-			// #endif 
 		}
 	}
 
 	if(isLastNode(itr_node) || itr_node != NULL){
-		// Pthread_mutex_unlock(&itr_node->node_lock); 
+		#ifndef _NO_HOH_LOCK_TRIE	
+		pthread_mutex_destroy(&itr_node->node_lock);
+		#endif 
 		free(itr_node); 
 		itr_node = NULL; 
 		return ; 
@@ -635,7 +646,13 @@ void delete_trie(trie_t trie){
 		// Pthread_mutex_unlock(&itr_node->node_lock);
 		// #endif 
 
+		#ifndef _NO_HOH_LOCK_TRIE	
+		pthread_mutex_destroy(&trie->head->node_lock);
+		#endif 
+		
+		free(trie->head);
 		free(trie);
+		trie->head = NULL;
 		trie = NULL;
 		return ; 
 	}
