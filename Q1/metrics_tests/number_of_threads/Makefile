@@ -40,9 +40,11 @@ workload:
 clean: 
 	rm rw_lock s_lock hoh_lock
 
-
-
-
-
-
+all: 
+	@echo cleaning ....
+	@make clean
+	@make workload
+	@make build
+	@make exec 
+	@make plot
 

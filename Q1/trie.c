@@ -113,7 +113,10 @@ void insert(trie_t trie, char* key, int value){
 		if (ins_node->children[index] == NULL){ 
 			ins_node->children[index] = create_node();
 		}
+		#ifndef _NO_HOH_LOCK_TRIE
 		struct node* temp = ins_node;
+		#endif
+		
 		
 		ins_node = ins_node->children[index]; 
 
@@ -193,8 +196,9 @@ int find(trie_t trie,char* key, int* val_ptr){
 
 			return -1; 
 		} 
+		#ifndef _NO_HOH_LOCK_TRIE
 		struct node* temp = itr_node;
-
+		#endif
 		itr_node = itr_node->children[index]; 
 		
 		#ifndef _NO_HOH_LOCK_TRIE
@@ -491,7 +495,9 @@ char** keys_with_prefix(trie_t trie, char* prefix){
 			free(INS_INDEX)	;
 			return list; 
 		}
+		#ifndef _NO_HOH_LOCK_TRIE
 		struct node* temp = itr_node;
+		#endif
 		itr_node = itr_node->children[index]; 
 			
 		#ifndef _NO_HOH_LOCK_TRIE
@@ -684,39 +690,3 @@ void delete_trie(trie_t trie){
 	return ; 
 }
 
-// void printList(char ** temp){ 
-//     for(int i= 0; i < 3; i++) {
-//         printf("%s\n", temp[i]); 
-//     }
-// }
-
-
-// int main(){
-//     trie_t trie = init_trie(); 
-//     insert(trie, "hello",0); 
-// 	insert(trie, "dog",1); 
-// 	insert(trie, "hell",0); 
-// 	insert(trie, "cat",0); 
-// 	insert(trie, "a",0); 
-// 	insert(trie, "hel",0); 
-// 	insert(trie, "help",0); 
-// 	insert(trie, "helps",120); 
-// 	insert(trie, "a",0); 
-// 	insert(trie, "aaa",0); 
-// 	insert(trie, "aa",0); 
-// 	insert(trie, "aaaa",0); 
-// 	insert(trie, "a",0); 
-// 	insert(trie, "aaa",0); 
-//     int* ptr = (int*)malloc(sizeof(int)) ;
-// 	// delete_kv(trie, "helps"); 
-// 	// delete_kv(trie, "help"); 
-// 	printf("%d\n", find(trie, "helps", ptr)) ; 
-// 	printf("%d\n", find(trie, "help", ptr)) ; 
-// 	printf("%d\n", find(trie, "helping", ptr)) ; 
-// 	printf("%d\n", find(trie, "hel", ptr)) ; 
-// 	printf("%d\n", find(trie, "dog", ptr)) ; 
-//     char ** temp = keys_with_prefix(trie, "h"); 
-//     printList(temp);
-//     delete_trie(trie); 
-//     return 0 ; 
-// }

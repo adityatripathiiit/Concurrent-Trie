@@ -2,8 +2,8 @@ import random
 import string
 
 
-TREE_SIZE = 30
-ENTRIES_IN_FILE = 9000
+TREE_SIZE = 100
+ENTRIES_IN_FILE = 15000
 
 def get_random_string(treesize):
     length = random.randint(1,treesize)
@@ -23,7 +23,7 @@ for i in range(TREE_SIZE):
     for j in range(number_of_entries):
         file_read.write(get_random_string(i+1)+ "\n")
         file_initial.write(get_random_string(i+1)+ "\n")
-        file_initial.write(str(random.randint(1,1000))+ "\n")
+        file_initial.write(str(random.randint(1,10000))+ "\n")
         file_pref.write(get_random_string(i+1)+ "\n")
         file_rem.write(get_random_string(i+1)+ "\n")
 

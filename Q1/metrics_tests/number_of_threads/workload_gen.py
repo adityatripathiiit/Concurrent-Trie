@@ -1,16 +1,8 @@
 import random
 import string
 
-# NUMBER_OF_THREADS = 100
 TREE_SIZE = 4
-ENTRIES_IN_FILE = 9090
-
-# def get_random_string():
-#     length = random.randint(1,TREE_SIZE)
-#     letters = string.ascii_lowercase
-#     result_str = ''.join(random.choice(letters) for i in range(length))
-#     # print("Random string of length", length, "is:", result_str)
-#     return(result_str)
+ENTRIES_IN_FILE = 9000
 
 def get_random_string():
     length = random.randint(1,TREE_SIZE)
@@ -20,15 +12,12 @@ def get_random_string():
     return(result_str)
 
 
-# for i in range(NUMBER_OF_THREADS):
-# number_of_entries = random.randint(1,ENTRIES_IN_FILE)
-number_of_entries = ENTRIES_IN_FILE
 i=0
 file_read = open("./workload/find/"+str(i+1)+".txt", "w")
 file_initial = open("./workload/initial/"+str(i+1)+".txt", "w")
 file_pref = open("./workload/pref/"+str(i+1)+".txt", "w")
 file_rem = open("./workload/rem/"+str(i+1)+".txt", "w")
-for j in range(number_of_entries):
+for j in range(ENTRIES_IN_FILE):
     file_read.write(get_random_string()+ "\n")
     file_initial.write(get_random_string()+ "\n")
     file_initial.write(str(random.randint(1,1000))+ "\n")

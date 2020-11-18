@@ -1,7 +1,7 @@
 CC      := gcc
 CCFLAGS := -Wall -Werror -pthread -g
 
-DEPS := trie.h trie.c
+DEPS := trie.h
 B_TARGETS := test_trie_single_threaded test_trie_s_lock test_trie_rw_lock test_trie_hoh_lock
 R_TARGETS := single_threaded s_lock rw_lock hoh_lock
 ST_TARGETS := single_threaded

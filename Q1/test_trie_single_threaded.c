@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include "trie.h"
+#include "trie.c"
 
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"      /* Green */

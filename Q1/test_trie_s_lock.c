@@ -6,6 +6,7 @@
 #include <string.h>
 #include <pthread.h>
 #include "trie.h"
+#include "trie.c"
 
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"      /* Green */

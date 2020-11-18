@@ -11,7 +11,6 @@ def plot_graph():
     file_name1 = "./data/nthreads_s_lock.csv"
     file_name2 = "./data/nthreads_rw_lock.csv"
     file_name3 = "./data/nthreads_hoh_lock.csv"
-    # file_name4 = "./data/"+flag+"_"+ "RANDOM.csv"
     
     with open(file_name1, 'r') as csvfile:
         plots= csv.reader(csvfile, delimiter=',')
@@ -55,16 +54,13 @@ def plot_graph():
     plt.plot(x_new,y_smooth, color="red", label="HOH_Lock", linewidth=1.5)
 
     
-    plt.title(" Work Load comparision")
+    plt.title("Workload performance comparision wrt Concurrent Threads")
 
     plt.xlabel('Number of Threads')
     plt.ylabel('Time (s)')
     plt.legend(loc='best')
 
-    plt.savefig("./plots/nthreads",dpi = 600)
+    plt.savefig("./plots/nthreads_comp",dpi = 600)
     plt.close()
 
-
 plot_graph()
-# plot_graph("LOOP")
-# plot_graph("RANDOM")

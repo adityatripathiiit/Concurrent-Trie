@@ -1,16 +1,16 @@
 #include "../../trie.c"
 #include "../../trie.h"
-#define SIZE_OF_TREE 30 
-#define NUMBER_OF_FIXED_THREADS 30
+#define SIZE_OF_TREE 100 
+#define NUMBER_OF_FIXED_THREADS 100
 
 trie_t trie; 
-
-pthread_mutex_t ins_file_lock; 
 
 FILE* ins_file ;
 FILE* find_test;
 FILE* rem_file; 
 FILE* pref_test; 
+
+pthread_mutex_t ins_file_lock; 
 
 void* insert_task(){
     char key[SIZE_OF_TREE+10];

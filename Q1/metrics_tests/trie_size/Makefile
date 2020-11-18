@@ -35,10 +35,19 @@ plot:
 	@echo "Plots sucessfully created" 
 	
 workload:
+	@echo generating workload ....
 	@python3 workload_gen.py
 
 clean: 
 	rm rw_lock s_lock hoh_lock
+
+all: 
+	@make workload
+	@make build
+	@make exec 
+	@make plot
+	@echo cleaning ....
+	@make clean
 
 
 

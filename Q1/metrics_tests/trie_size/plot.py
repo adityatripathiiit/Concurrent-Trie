@@ -54,7 +54,7 @@ def plot_graph():
     plt.plot(x_new,y_smooth, color="red", label="HOH_Lock", linewidth=1.5)
 
     
-    plt.title(" Performance Wrt Trie Size")
+    plt.title(" Performance Wrt Trie Size (100 concurrent threads)")
 
     plt.xlabel('Trie size')
     plt.ylabel('Time (s)')

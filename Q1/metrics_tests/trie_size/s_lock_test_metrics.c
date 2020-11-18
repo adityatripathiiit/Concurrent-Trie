@@ -35,11 +35,10 @@ int main(int argc, char* argv[]){
         rem_parent(i);
         pref_parent(i);
 
+
         gettimeofday(&end, NULL);
-       
-        double time_taken; 
-  
-        time_taken = (end.tv_sec - start.tv_sec) * 1e6; 
+    
+        double time_taken = (end.tv_sec - start.tv_sec) * 1e6; 
         time_taken = (time_taken + (end.tv_usec -start.tv_usec)) * 1e-6; 
         delete_trie(trie);
         fprintf(f,"%d,%f\n",i, time_taken);
