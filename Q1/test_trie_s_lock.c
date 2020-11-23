@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
-#include "trie.h"
 #include "trie.c"
 
 #define RESET   "\033[0m"
@@ -94,16 +93,13 @@ void* pref_task(void *tnum){
         if (key[0]=='-') break;
         list = keys_with_prefix(trie, key);
         int i=0;
-        if(list != NULL)
-        {
-            if(list[i] == NULL){
-            fprintf(pref_test_exp, "\n"); 
-            }
-            while(list[i]!=NULL){
-                fprintf(pref_test_exp,"%s\n",list[i]);
-                free(list[i]);
-                i++;
-            }
+        if (list[i]==NULL){
+            fprintf(pref_test_exp,"\n");
+        }
+        while(list[i]!=NULL){
+            fprintf(pref_test_exp,"%s\n",list[i]);
+            free(list[i]);
+            i++;
         }
         free(list);
     }

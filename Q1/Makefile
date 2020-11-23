@@ -1,7 +1,6 @@
 CC      := gcc
 CCFLAGS := -Wall -Werror -pthread -g
 
-DEPS := trie.h
 B_TARGETS := test_trie_single_threaded test_trie_s_lock test_trie_rw_lock test_trie_hoh_lock
 R_TARGETS := single_threaded s_lock rw_lock hoh_lock
 ST_TARGETS := single_threaded
@@ -17,7 +16,7 @@ test_trie_hoh_lock.c: test_trie_s_lock.c
 	@tail -n +3 $< > $@
 	@echo Updated $@
 
-$(B_TARGETS): % : %.c $(DEPS)
+$(B_TARGETS): % : %.c
 	@echo Building
 	$(CC) -o $@ $^ $(CCFLAGS)
 
@@ -50,7 +49,7 @@ $(MT_TARGETS): % : test_trie_%
 	@echo "-------------------------------------------"
 	@cat ./.testout/heltest_out_$<
 
-clean:
+clean: 
 	rm -f $(B_TARGETS)
 	rm -f -r ./.testout
 	rm -f -r ./test_trie_rw_lock.c
