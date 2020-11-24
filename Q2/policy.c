@@ -13,7 +13,8 @@ float policy_FIFO(struct workload * w, int cache_size)
 	float hit_rate = 0;
 	int size = w->size ;
 	int pages = w->pages ;
-	// Using an array based queue data structure 
+	// Using an array based queue data structure
+	// Space complextiy O(cache_size)
 	// Insert at the ith index & lookup : O(1) Time complexity
 	int queue[cache_size]; 
 	int hits = 0 ;
@@ -24,7 +25,7 @@ float policy_FIFO(struct workload * w, int cache_size)
 	for(int i=0;i<cache_size;i++){
 		queue[i] = -1; 
 	}
-	// Total Time complexity: O(pages*cache_size)
+	// Total Time complexity: O(size*cache_size)
 	for(int i=0; i<size; i++){
 		int check = w->work[i]; // Current page 
 		int found_flag = 0 ;
@@ -63,11 +64,12 @@ float policy_LRU(struct workload * w, int cache_size)
 
 	int cache[cache_size][2]; 
 	// Initialisation to -1
+	// Space complexity: O(cache_size)
 	for(int i=0; i<cache_size; i++){
 		cache[i][0] = -1 ;
 		cache[i][1] = -1 ;
 	}
-	// Overall complexity: O(pages*cache_size)
+	// Overall time complexity: O(size*cache_size)
 	for(int i=0; i<size; i++){
 		
 		int flag1 = 0;
@@ -115,6 +117,7 @@ float policy_LRUapprox(struct workload * w, int cache_size)
 	// Array based 2d queue
 	// one to maintain the page value
 	// The second one is used to maintain the second chance flag
+	// Space complexity: O(cache_size)
 	int cache[cache_size][2]; 
 	// Clock hand, circular pointer
 	int hand = 0 ;
@@ -123,7 +126,7 @@ float policy_LRUapprox(struct workload * w, int cache_size)
 		cache[i][0] = -1 ;
 		cache[i][1] = 0;
 	}
-	// Overall complexity: O(pages*cache_size)
+	// Overall complexity: O(size*cache_size)
 	for(int i=0; i<size; i++){
 		int check = w->work[i]; //current page
 		int found = 0 ;
@@ -169,6 +172,7 @@ float policy_RANDOM(struct workload * w, int cache_size)
 	int pages = w->pages ;
 	// Using an array based queue data structure 
 	// Insert at the ith index & lookup : O(1) Time complexity
+	// space complexity of O(cache_size)
 	int queue[cache_size]; 
 	int hits = 0 ;
 	// pointer for random page elemination 
@@ -177,7 +181,7 @@ float policy_RANDOM(struct workload * w, int cache_size)
 	for(int i=0;i<cache_size;i++){
 		queue[i] = -1; 
 	}
-	// Total Time complexity: O(pages*cache_size)
+	// Total Time complexity: O(size*cache_size)
 	for(int i=0; i<size; i++){
 		int check = w->work[i]; // Current page 
 		int found_flag = 0 ;
