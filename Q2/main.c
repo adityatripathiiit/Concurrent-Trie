@@ -60,10 +60,10 @@ int main()
 	srand (time(NULL));
 	int cache_size ;
 	// Taking input: The number of pages, The size of workload, and the cache-size
-	printf("Please enter the number of pages: "); 
+	printf("Please enter the number of unique pages: "); 
 	scanf("%d", &pages); 
 	printf("\n");
-	printf("Please enter the size of the workload: ");
+	printf("Please enter the total size of the workload: ");
 	scanf("%d", &size ); 
 	printf("\n");
 	printf("Please enter the cache size: ");
@@ -114,9 +114,9 @@ int main()
 	// Creating CSV files for the workload and hitrate data
 
 	printf("Creating CSV files ... \n"); 
-	loop_csv(work_load_loop); 
-	random_csv(work_load_random); 
-	local_csv(work_load_local); 
+	loop_csv(work_load_loop, cache_size); 
+	random_csv(work_load_random, cache_size); 
+	local_csv(work_load_local, cache_size); 
 	printf("Done \n"); 
 
 	return 0;

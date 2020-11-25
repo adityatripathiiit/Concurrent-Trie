@@ -2,7 +2,7 @@
 // and different policies
 #include "definitions.h"
 
-void create_csv(char* policy_type, char* type, struct workload* work_load ){
+void create_csv(char* policy_type, char* type, struct workload* work_load, int cacheSize){
     // setting the path name according to the policy type and work load type
     char path[1024] = ""; 
     strcat(path , "./data/");
@@ -20,22 +20,22 @@ void create_csv(char* policy_type, char* type, struct workload* work_load ){
     int cache_size;
     // Depending on the policy type, enter data by running workload on the policy
     if(policy_type == "FIFO"){
-        for(cache_size = 1;cache_size<=work_load->size; cache_size ++ ){
+        for(cache_size = 1;cache_size<=cacheSize; cache_size ++ ){
             fprintf(f,"%d,%f\n",cache_size, policy_FIFO(work_load,cache_size));
         }
     }
     else if(policy_type == "LRU"){
-        for(cache_size = 1;cache_size<=work_load->size; cache_size ++ ){
+        for(cache_size = 1;cache_size<=cacheSize; cache_size ++ ){
             fprintf(f,"%d,%f\n",cache_size, policy_LRU(work_load,cache_size));
         }
     }
     else if(policy_type == "LRUAppr"){
-        for(cache_size = 1;cache_size<=work_load->size; cache_size ++ ){
+        for(cache_size = 1;cache_size<=cacheSize; cache_size ++ ){
             fprintf(f,"%d,%f\n",cache_size, policy_LRUapprox(work_load,cache_size));
         }
     }
     else if(policy_type == "RANDOM"){
-        for(cache_size = 1;cache_size<=work_load->size; cache_size ++ ){
+        for(cache_size = 1;cache_size<=cacheSize; cache_size ++ ){
             fprintf(f,"%d,%f\n",cache_size, policy_RANDOM(work_load,cache_size));
         }
     }
@@ -44,23 +44,23 @@ void create_csv(char* policy_type, char* type, struct workload* work_load ){
 
 // Functions for creating all combinations of workload
 // and policy
-void loop_csv(struct workload* work_load){
-    create_csv("FIFO","LOOP",  work_load); 
-    create_csv("LRU", "LOOP",work_load); 
-    create_csv("LRUAppr","LOOP", work_load); 
-    create_csv("RANDOM", "LOOP",work_load); 
+void loop_csv(struct workload* work_load, int cache_size){
+    create_csv("FIFO","LOOP",  work_load, cache_size); 
+    create_csv("LRU", "LOOP",work_load, cache_size); 
+    create_csv("LRUAppr","LOOP", work_load, cache_size); 
+    create_csv("RANDOM", "LOOP",work_load, cache_size); 
 }
 
-void random_csv(struct workload* work_load){
-    create_csv("FIFO","RANDOM", work_load); 
-    create_csv("LRU", "RANDOM", work_load); 
-    create_csv("LRUAppr", "RANDOM", work_load); 
-    create_csv("RANDOM", "RANDOM", work_load); 
+void random_csv(struct workload* work_load, int cache_size){
+    create_csv("FIFO","RANDOM", work_load, cache_size); 
+    create_csv("LRU", "RANDOM", work_load, cache_size); 
+    create_csv("LRUAppr", "RANDOM", work_load, cache_size); 
+    create_csv("RANDOM", "RANDOM", work_load, cache_size); 
 }
 
-void local_csv(struct workload* work_load){
-    create_csv("FIFO","LOCAL", work_load); 
-    create_csv("LRU","LOCAL", work_load); 
-    create_csv("LRUAppr", "LOCAL",work_load); 
-    create_csv("RANDOM", "LOCAL",work_load); 
+void local_csv(struct workload* work_load, int cache_size){
+    create_csv("FIFO","LOCAL", work_load, cache_size); 
+    create_csv("LRU","LOCAL", work_load, cache_size); 
+    create_csv("LRUAppr", "LOCAL",work_load, cache_size); 
+    create_csv("RANDOM", "LOCAL",work_load, cache_size); 
 }

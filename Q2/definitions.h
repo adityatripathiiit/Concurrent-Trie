@@ -57,8 +57,8 @@ float policy_LRU(struct workload * w, int cache_size);
 float policy_RANDOM(struct workload * w, int cache_size);
 float policy_LRUapprox(struct workload * w, int cache_size);
 
-void loop_csv(struct workload* work_load);
-void random_csv(struct workload* work_load);
-void local_csv(struct workload* work_load);
+void loop_csv(struct workload* work_load, int cache_size);
+void random_csv(struct workload* work_load, int cache_size);
+void local_csv(struct workload* work_load, int cache_size);
 
 #endif /* __DEF_H__ */

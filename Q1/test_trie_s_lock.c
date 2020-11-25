@@ -1,12 +1,11 @@
+#define _S_LOCK_TRIE
+#define _NO_HOH_LOCK_TRIE
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
-
-#define _S_LOCK_TRIE
-#define _NO_HOH_LOCK_TRIE
-#include "trie.h"
+#include "trie.c"
 
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"      /* Green */
@@ -94,8 +93,8 @@ void* pref_task(void *tnum){
         if (key[0]=='-') break;
         list = keys_with_prefix(trie, key);
         int i=0;
-        if(list[i] == NULL){
-            fprintf(pref_test_exp, "\n"); 
+        if (list[i]==NULL){
+            fprintf(pref_test_exp,"\n");
         }
         while(list[i]!=NULL){
             fprintf(pref_test_exp,"%s\n",list[i]);
