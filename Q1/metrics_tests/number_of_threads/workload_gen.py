@@ -1,8 +1,8 @@
 import random
 import string
 
-TREE_SIZE = 4
-ENTRIES_IN_FILE = 9000
+TREE_SIZE = 6
+ENTRIES_IN_FILE = 500000
 
 def get_random_string():
     length = random.randint(1,TREE_SIZE)

@@ -11,7 +11,8 @@ TARGET3 := hoh_lock_test_metrics.c
 help:
 	@echo make build : To build all the files 
 	@echo make exec : To execute the build files 
-	@echo make plot : To generate plot 
+	@echo make plot : To generate plot without average
+	@echo make plot2 : To generate plot with average
 	@echo make workload : To generate workload
 	@echo make clean : To clean the build files
 
@@ -33,25 +34,23 @@ plot:
 	@echo "Creating Plots ..."
 	@python3 plot.py 
 	@echo "Plots sucessfully created" 
+
+plot2:
+	@echo "Creating Plots ..."
+	@python3 plot2.py 
+	@echo "Plots sucessfully created" 
 	
 workload:
-	@echo generating workload ....
 	@python3 workload_gen.py
 
 clean: 
 	rm rw_lock s_lock hoh_lock
 
 all: 
+	@echo cleaning ....
+	@make clean
 	@make workload
 	@make build
 	@make exec 
 	@make plot
-	@echo cleaning ....
-	@make clean
-
-
-
-
-
-
 

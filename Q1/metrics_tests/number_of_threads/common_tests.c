@@ -1,7 +1,7 @@
 #include "../../trie.c"
 #include "../../trie.h"
 #define NUMBER_OF_CONCURRENT_THREADS 100
-#define MAX_TREE_SIZE 4
+
 trie_t trie; 
 
 FILE* ins_file ;

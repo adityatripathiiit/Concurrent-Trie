@@ -29,6 +29,7 @@ int main(int argc, char* argv[]){
         trie = init_trie();
 
         ins_parent(i);
+        ins_parent(i);
         // find_parent(i);
         // rem_parent(i);
         // pref_parent(i);
