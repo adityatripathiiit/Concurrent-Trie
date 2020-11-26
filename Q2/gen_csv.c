@@ -2,6 +2,12 @@
 // and different policies
 #include "definitions.h"
 
+/*
+    void create_csv(char* policy_type, char* type, struct workload* work_load, int cacheSize): 
+    Creates CSV files for the given input configuration by invoking the required policy
+    Writes the cache_size and the return hit rate from the policy invoked on the input workload
+        
+*/ 
 void create_csv(char* policy_type, char* type, struct workload* work_load, int cacheSize){
     // setting the path name according to the policy type and work load type
     char path[1024] = ""; 

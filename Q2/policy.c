@@ -7,7 +7,12 @@ Each policy must return the hit rate
 
 #include "definitions.h"
 
-// FIFO policy
+/*
+	float policy_FIFO(struct workload * w, int cache_size): 
+	Runs the workload via FIFO scheduling
+	Returns the hit rate. 
+*/ 
+
 float policy_FIFO(struct workload * w, int cache_size)
 {
 	float hit_rate = 0;
@@ -51,6 +56,11 @@ float policy_FIFO(struct workload * w, int cache_size)
 }
 
 // LRU(Least Recently Used) Policy 
+/*
+	float policy_LRU(struct workload * w, int cache_size): 
+	Runs the workload using LRU policy 
+	Returns the hitrate
+*/ 
 float policy_LRU(struct workload * w, int cache_size)
 {
 	float hit_rate = 0;
@@ -108,6 +118,11 @@ float policy_LRU(struct workload * w, int cache_size)
 }
 
 // Arrox_LRU/ Clock Hand mechanism/ Second chance algorithm
+/*
+	float policy_LRUapprox(struct workload * w, int cache_size)
+	Runs the workload using LRUApprox policy 
+	Returns the hitrate
+*/ 
 float policy_LRUapprox(struct workload * w, int cache_size)
 {
 	float hit_rate = 0;
@@ -157,14 +172,17 @@ float policy_LRUapprox(struct workload * w, int cache_size)
 		}
 	}
 
-	// printf("LRUApprox hits: %d\n",hits); 
-	// printf("LRUArrox miss: %d\n",pages-hits); 
 	hit_rate = (100*(float)hits)/((float)size); 
 	/* fill this */
 	return hit_rate;
 }
 
 // Random Policy
+/*
+	float policy_RANDOM(struct workload * w, int cache_size)
+	Runs the workload using Random policy 
+	Returns the hitrate
+*/ 
 float policy_RANDOM(struct workload * w, int cache_size)
 {	
 	float hit_rate = 0;

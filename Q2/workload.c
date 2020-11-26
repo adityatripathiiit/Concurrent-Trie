@@ -7,7 +7,13 @@ This file will contain all the functions related to the generation of workload
 
 #include "definitions.h"
 
-// Note: The work must be generated for the returned pointer
+
+/*
+    struct workload * generate_workload(WorkloadsT type, int pages, int size): 
+    Generates the workload for the given input paramaters.     
+    Return the generated workload pointer
+    Note: The work must be generated for the returned pointer
+*/ 
 struct workload * generate_workload(WorkloadsT type, int pages, int size)
 {
     struct workload* work_load =  (struct workload*)malloc(sizeof(struct workload))  ; 
@@ -27,6 +33,13 @@ struct workload * generate_workload(WorkloadsT type, int pages, int size)
     return work_load ;
 }
 
+/*
+    struct workload * generate_random(struct workload * w)
+    Sets the workload array for random workload, depending on the parameter of workload
+    Assigns the array to the input workload 
+    Return the generated workload pointer
+    Note: The work must be generated for the returned pointer
+*/ 
 struct workload * generate_random(struct workload * w)
 {
     int size = w->size ;
@@ -39,6 +52,15 @@ struct workload * generate_random(struct workload * w)
     w->work = work_array; 
     return w;
 }
+
+
+/*
+    struct workload * generate_loop(struct workload * w)
+    Sets the workload array for looping workload, depending on the parameter of workload
+    Assigns the array to the input workload 
+    Return the generated workload pointer
+    Note: The work must be generated for the returned pointer
+*/ 
 
 struct workload * generate_loop(struct workload * w)
 {
@@ -63,6 +85,13 @@ struct workload * generate_loop(struct workload * w)
     return w;
 }
 
+/*
+    struct workload * generate_local(struct workload * w)
+    Sets the workload array for local(80-20) workload, depending on the parameter of workload
+    Assigns the array to the input workload 
+    Return the generated workload pointer
+    Note: The work must be generated for the returned pointer
+*/ 
 struct workload * generate_local(struct workload * w)
 {
     int size = w->size ;

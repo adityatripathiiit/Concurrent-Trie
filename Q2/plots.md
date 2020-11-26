@@ -36,7 +36,7 @@
 ##  Time Complexity and Space Complexity Analysis Of Various Scheduling Policies wrt Data Structures 
 
 1) ### FIFO: 
-    - Using an array based queue data structure, with space       complexity of O(cache_size)
+    - Using an array based queue data structure, with space complexity of O(cache_size)
     - A cicular pointer representing the head of the queue, for mimicing the pop from FIFQ queue
     - Insert at the ith index & lookup : O(1) Time complexity
     - For every page, takes O(cache_size) time to find it in the queue

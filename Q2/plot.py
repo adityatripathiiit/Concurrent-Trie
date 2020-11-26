@@ -4,6 +4,7 @@ import csv
 from scipy.interpolate import make_interp_spline,BSpline
 import numpy as np
 
+# Generates plots for 3 type of workloads, depending on the value of flag. 
 def plot_graph(flag):
 
     x=[]
