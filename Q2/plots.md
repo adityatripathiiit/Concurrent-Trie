@@ -4,33 +4,23 @@
 
 1) ## 80-20
 
-    - ### Cache_Size = 100, Size = 10,000 , Pages = 100
-    #
-    ![Image not availabe](plots/type1/LOCAL.png)
-    #
-    - ### Cache_Size = 100, Size = 10,000 , Pages = 50
-    #
-    ![Image not availabe](plots/type2/LOCAL.png)
+    Cache_Size = 100, Size = 10,000 , Pages = 100            |  Cache_Size = 100, Size = 10,000 , Pages = 50
+    :-------------------------:|:-------------------------:
+    ![](plots/type1/LOCAL.png)  |  ![](plots/type2/LOCAL.png)
+    
     #
 2) ## Random
 
-    - ### Cache_Size = 100, Size = 10,000 , Pages = 100
-    #
-    ![Image not availabe](plots/type1/RANDOM.png)
-    #
-    - ### Cache_Size = 100, Size = 10,000 , Pages = 50
-    #
-    ![Image not availabe](plots/type2/RANDOM.png)
+    Cache_Size = 100, Size = 10,000 , Pages = 100            |  Cache_Size = 100, Size = 10,000 , Pages = 50
+    :-------------------------:|:-------------------------:
+    ![](plots/type1/RANDOM.png)  |  ![](plots/type2/RANDOM.png)
     #
 2) ## Looping
 
-    - ### Cache_Size = 100, Size = 10,000 , Pages = 100
+    Cache_Size = 100, Size = 10,000 , Pages = 100            |  Cache_Size = 100, Size = 10,000 , Pages = 50
+    :-------------------------:|:-------------------------:
+    ![](plots/type1/LOOP.png)  |  ![](plots/type2/LOOP.png)
     #
-    ![Image not availabe](plots/type1/LOOP.png)
-    - ### Cache_Size = 100, Size = 10,000 , Pages = 50
-    #
-    ![Image not availabe](plots/type2/LOOP.png)
-
 
 
 ##  Time Complexity and Space Complexity Analysis Of Various Scheduling Policies wrt Data Structures 

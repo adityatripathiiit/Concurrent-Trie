@@ -2,6 +2,11 @@
 
 ## Performace Metrics: 
 #
+
+### General Comment on the trend of RW lock performance graphs
+
+Note that as we can see the graphs, the graph of reader-writer locks have quite a lot disturbance and there is usually a peak followed by a dip. This is because at the point ok peak, the reader-locks starve out the writer-lock. Therefore, the writing part starves for a long time. Also, the disurbance can also be explained by starving of the writer lock by the reader-locks. 
+
 1) ### Number of concurrent threads
     #
     ### Workload and tester configuration for test:  
