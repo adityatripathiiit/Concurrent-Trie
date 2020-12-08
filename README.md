@@ -100,7 +100,7 @@ Concurrent-Trie
 ## Feature Checklist ✅
 ```
 ✅ Concurrent trie data structure
-✅ With Autocomplete(prefix match), Insert, Find, Delete key and delete trie. 
+✅ With Autocomplete(prefix match), Insert, Find, Delete Key and Delete Trie. 
 ✅ Single lock mechanism 
 ✅ Hand Over Hand (HOH) lock mechanism 
 ✅ Reader-Writer lock mechanism 
@@ -116,7 +116,7 @@ Concurrent-Trie
 ```
 
 ## Instructions to Run 🏃
-#
+
 ## Compiling the test code:
 - **Single Threaded:** `make test_trie_single_threaded`
 - **Multi Threaded (Single Locking):** `make test_trie_s_lock` 
@@ -131,7 +131,7 @@ Concurrent-Trie
 - **Multi Threaded (Hand on Hand Lock):** `make hoh_lock`
 
 ### Can also run `make` to compile and run all the tests automatically
-#
+
 
 ## Benchmarking 🚦
 
@@ -153,7 +153,6 @@ Concurrent-Trie
 ## Results and Conclusions 📊
 
 
-#
 ### General Comment on the trend of RW lock performance graphs 🎉
 
 Note that as we can see the graphs, the graph of reader-writer locks have quite a lot disturbance and there is usually a peak followed by a dip. This is because at the point ok peak, the reader-locks starve out the writer-lock. Therefore, the writing part starves for a long time. Also, the disurbance can also be explained by starving of the writer lock by the reader-locks. 
